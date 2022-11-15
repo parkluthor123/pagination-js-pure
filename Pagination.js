@@ -1,3 +1,5 @@
+console.clear();
+
 class Pagination{
 
     #currentPage = 1;
@@ -10,7 +12,7 @@ class Pagination{
     constructor({listID, perPage, maxPagesButtons}){
         this.#container = document.querySelector(listID);
         this.#perPage = perPage;
-        this.#maxPagesButtons = maxPagesButtons || 5; 
+        this.#maxPagesButtons = maxPagesButtons || 5;
         this.#setListElements();
         this.#createPages();
     }
@@ -24,7 +26,7 @@ class Pagination{
     #createPages(){
         const items = this.#listItems;
         this.#container.innerHTML = '';
-        const partialItems = [[]]
+        const partialItems = [,]
 
         // Divide o array pelo numero de itens por pagina
         for(let i = 0; i < items.length; i + this.#perPage){
@@ -61,17 +63,15 @@ class Pagination{
             <div style="display: flex; gap: 10px;">
                 <button type="button" data-pagination-buttons="prev">Prev</button>
                 <div class="pages-items" style="display: flex; gap: 10px;">
-                    ${this.#currentPage > this.#maxPagesButtons ? pages.slice(this.#currentPage -1, pages.length).map((items, i) => {
-                        if(i <= this.#maxPagesButtons - 1)
-                        {
-                            return `<span data-pagination-buttons="page-number" ${items === this.#currentPage ? `style="text-decoration: underline"` : `style="text-decoration: none"`}>${items}</span>${i === this.#maxPagesButtons - 1 ? `...<span ${lastPage === this.#currentPage ? `style="text-decoration: underline"` : `style="text-decoration: none"`} data-pagination-buttons="page-number">${lastPage}</span>` : ''}`;
-                        }
-                    }).join('') : pages.map((items, i) => {
-                        if(i <= this.#maxPagesButtons - 1)
-                        {
-                            return `<span data-pagination-buttons="page-number" ${items === this.#currentPage ? `style="text-decoration: underline"` : `style="text-decoration: none"`}>${items}</span>${i === this.#maxPagesButtons - 1 ? `...<span ${lastPage === this.#currentPage ? `style="text-decoration: underline"` : `style="text-decoration: none"`} data-pagination-buttons="page-number">${lastPage}</span>` : ''}`;
-                        }
+                    ${this.#currentPage > 2 ? `<span data-pagination-buttons="page-number">1</span>...` : ``}
+                    ${pages.slice(this.#currentPage -1 <= lastPage - this.#maxPagesButtons ? this.#currentPage -1 : lastPage - this.#maxPagesButtons, this.#currentPage + this.#maxPagesButtons -1).map((items) => {
+                        return `
+                            <span data-pagination-buttons="page-number" ${items === this.#currentPage ? `style="text-decoration: underline"` : `style="text-decoration: none"`}>
+                                ${items}
+                            </span>
+                        `;
                     }).join('')}
+                    ${this.#currentPage <= lastPage - this.#maxPagesButtons ? `...<span ${lastPage === this.#currentPage ? `style="text-decoration: underline"` : `style="text-decoration: none"`} data-pagination-buttons="page-number">${lastPage}</span>` : ``}
                 </div>
                 <button type="button" data-pagination-buttons="next">Next</button>
             </div>
@@ -110,4 +110,12 @@ class Pagination{
         this.#currentPage != 1 ? this.#setUpdateCurrentPage(this.#currentPage - 1) : this.#currentPage;
         this.#createPages();
     }
+
+    // seta os estilos dos botões personalizados
 }
+
+const pagination = new Pagination({
+    listID: '#container',
+    perPage: 5,
+    maxPagesButtons: 5
+});
